@@ -39,7 +39,10 @@ function App() {
         const {data, error} = await supabase
             .storage
             .from('images') // videos/
-            .list('')
+            .list('', {
+                cacheControl: '3600',
+                upsert: false
+            })
 
 
         if (data !== null) {
@@ -74,6 +77,26 @@ function App() {
 
     }
 
+    async function uploadImage(e) {
+        const imageFile = e.target.files[0];
+
+        const {error} = await supabase.storage
+            .from('images')
+            .upload(uuidv4() + ".jpeg", imageFile) // uuidv4() => ASDFASDFASDASFASDF.mp4
+            console.log("Upload!");
+
+        if (error) {
+            console.log(error);
+            alert("Error uploading file to Supabase");
+        }
+
+        await getImages();
+
+    }
+
+
+
+
     console.log(videos);
 
     return (
@@ -105,13 +128,17 @@ function App() {
             {/*        })}*/}
             {/*    </Row>*/}
             {/*</Container>*/}
-            <div>
+            <div style={{maxWidth:'1200px', margin:'0 auto'}}>
+                <h1>GET images</h1>
                 <button onClick={getImages}>Click</button>
                 <ul>
-                    {images.map((image, index) => <li><img src={CDNURL+image.name} alt={image.name}/></li>)
-
-                    }
+                    {images.map((image, index) => <li><img style={{width:'300px', height:'300px'}} src={CDNURL+image.name} alt={image.name}/></li>)}
                 </ul>
+            </div>
+
+            <div>
+                <h1>Upload images</h1>
+                <input type="file" onChange={(e)=>uploadImage(e)}/>
             </div>
         </div>
 
