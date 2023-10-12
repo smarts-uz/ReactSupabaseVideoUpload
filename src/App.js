@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import { useState, useEffect } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,9 +5,13 @@ import { Container, Form, Row, Col, Card } from 'react-bootstrap';
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 
-const supabase = createClient("https://ihbkpxujdzyblmtuzwdm.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImloYmtweHVqZHp5YmxtdHV6d2RtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzE0MDgxMzQsImV4cCI6MTk4Njk4NDEzNH0.RTSVQLdl9J689fAxjdcFyG6kdhbirUbSzll7ifwHP7A");
+const supabase = createClient(
+    "https://uyjwwcnooayvymdwbcsb.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5and3Y25vb2F5dnltZHdiY3NiIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTcwMDUzMTcsImV4cCI6MjAxMjU4MTMxN30.yRU-A6IHLf-OnGvyo45olnWddy1Xz79ImwJdG86zfp4");
 
-const CDNURL = "https://ihbkpxujdzyblmtuzwdm.supabase.co/storage/v1/object/public/videos/";
+// const CDNURL = "https://ihbkpxujdzyblmtuzwdm.supabase.co/storage/v1/object/public/videos/";
+const CDNURL = "https://uyjwwcnooayvymdwbcsb.supabase.co/storage/v1/object/public/images/";
+
 
 // https://ihbkpxujdzyblmtuzwdm.supabase.co/storage/v1/object/public/videos/testfile.mp4
 
@@ -18,7 +21,7 @@ function App() {
   async function getVideos() {
     const { data, error } = await supabase
       .storage
-      .from('videos') // videos/
+      .from('images') // videos/
       .list('')
     // data: [video1, video2, video3]
     // video1: "coopercodesvideo.mp4" CDNLINK.com/coopercodesvideo.mp4
@@ -32,7 +35,7 @@ function App() {
   }
 
   useEffect(() => {
-    getVideos();
+    getVideos().then();
   }, []);
 
   async function uploadFile(e) {
@@ -48,7 +51,7 @@ function App() {
       alert("Error uploading file to Supabase");
     }
 
-    getVideos();
+    await getVideos();
   }
 
   console.log(videos);
@@ -62,15 +65,18 @@ function App() {
       </Form.Group>
 
       <Row xs={1} className="g-4">
-        {videos.map((video) => {
+        {videos.map((video, index) => {
+
           console.log(video);
           if (video.name === ".emptyFolderPlaceholder") return null;
           
           return (
-            <Col>
-              <Card>
+            <Col >
+              <Card key={index} >
                 <video height="380px" controls>
-                  <source src={CDNURL + video.name} type="video/mp4" />
+                  {/*<source src={CDNURL + video.name} type="video/mp4" />*/}
+                  <img src={CDNURL+video.name} alt="img"/>
+                  <p>{video.name}</p>
                 </video>
               </Card>
             </Col>
